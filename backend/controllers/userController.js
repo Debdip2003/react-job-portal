@@ -8,9 +8,9 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   if (!name || !email || !phone || !password || !role) {
     return next(new ErrorHandler("Please fill full form !"));
   }
-  const isEmail = await User.findOne({ email });
+  const isEmail = await User.findOne({ email, role });
   if (isEmail) {
-    return next(new ErrorHandler("Email already registered !"));
+    return next(new ErrorHandler(`Email already registered as ${role} !`));
   }
   const user = await User.create({
     name,
@@ -27,18 +27,13 @@ export const login = catchAsyncErrors(async (req, res, next) => {
   if (!email || !password || !role) {
     return next(new ErrorHandler("Please provide email ,password and role !"));
   }
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email, role }).select("+password");
   if (!user) {
     return next(new ErrorHandler("Invalid Email Or Password.", 400));
   }
   const isPasswordMatched = await user.comparePassword(password);
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid Email Or Password !", 400));
-  }
-  if (user.role !== role) {
-    return next(
-      new ErrorHandler(`User with provided email and ${role} not found !`, 404)
-    );
   }
   sendToken(user, 201, res, "User Logged In Sucessfully !");
 });

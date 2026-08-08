@@ -1,23 +1,22 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { Context } from "../../main";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { AiOutlineClose } from "react-icons/ai"; // Import the close icon
+import { AiOutlineClose } from "react-icons/ai";
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
   const { isAuthorized, setIsAuthorized, user, setUser } = useContext(Context);
   const navigateTo = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     try {
       const response = await axios.get(
         "http://localhost:4000/api/v1/user/logout",
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       toast.success(response.data.message);
     } catch (error) {
@@ -29,49 +28,91 @@ const Navbar = () => {
     }
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
     <nav className={isAuthorized ? "navbarShow" : "navbarHide"}>
-      <div className="container">
-        <div className="logo">
-          <img src="/careerconnect-white.png" alt="logo" />
+      <div className="nav-container">
+        {/* Logo */}
+        <div className="nav-logo">
+          <img src="public/favicon.png" alt="CareerConnect Logo" />
+          <span className="nav-brand">CareerConnect</span>
         </div>
-        <ul className={!show ? "menu" : "show-menu menu"}>
+
+        {/* Nav Links */}
+        <ul className={show ? "nav-menu nav-menu--open" : "nav-menu"}>
           <li>
-            <Link to={"/"} onClick={() => setShow(false)}>
+            <Link
+              to="/"
+              className={`nav-link${isActive("/") ? " nav-link--active" : ""}`}
+              onClick={() => setShow(false)}
+            >
               HOME
             </Link>
           </li>
           <li>
-            <Link to={"/job/getall"} onClick={() => setShow(false)}>
+            <Link
+              to="/job/getall"
+              className={`nav-link${isActive("/job/getall") ? " nav-link--active" : ""}`}
+              onClick={() => setShow(false)}
+            >
               ALL JOBS
             </Link>
           </li>
           <li>
-            <Link to={"/applications/me"} onClick={() => setShow(false)}>
+            <Link
+              to="/applications/me"
+              className={`nav-link${isActive("/applications/me") ? " nav-link--active" : ""}`}
+              onClick={() => setShow(false)}
+            >
               {user && user.role === "Employer"
                 ? "APPLICANT'S APPLICATIONS"
                 : "MY APPLICATIONS"}
             </Link>
           </li>
-          {user && user.role === "Employer" ? (
+          {user && user.role === "Employer" && (
             <>
               <li>
-                <Link to={"/job/post"} onClick={() => setShow(false)}>
+                <Link
+                  to="/job/post"
+                  className={`nav-link${isActive("/job/post") ? " nav-link--active" : ""}`}
+                  onClick={() => setShow(false)}
+                >
                   POST NEW JOB
                 </Link>
               </li>
               <li>
-                <Link to={"/job/me"} onClick={() => setShow(false)}>
+                <Link
+                  to="/job/me"
+                  className={`nav-link${isActive("/job/me") ? " nav-link--active" : ""}`}
+                  onClick={() => setShow(false)}
+                >
                   VIEW YOUR JOBS
                 </Link>
               </li>
             </>
-          ) : null}
+          )}
 
-          <button onClick={handleLogout}>LOGOUT</button>
+          {/* Logout — inside menu on mobile */}
+          <li className="nav-logout-mobile">
+            <button className="nav-btn-logout" onClick={handleLogout}>
+              LOGOUT
+            </button>
+          </li>
         </ul>
-        <div className="hamburger" onClick={() => setShow(!show)}>
-          {show ? <AiOutlineClose /> : <GiHamburgerMenu />}
+
+        {/* Right side: logout (desktop) + hamburger */}
+        <div className="nav-right">
+          <button className="nav-btn-logout nav-logout-desktop" onClick={handleLogout}>
+            LOGOUT
+          </button>
+          <button
+            className="nav-hamburger"
+            onClick={() => setShow(!show)}
+            aria-label="Toggle menu"
+          >
+            {show ? <AiOutlineClose /> : <GiHamburgerMenu />}
+          </button>
         </div>
       </div>
     </nav>
