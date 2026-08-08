@@ -1,4 +1,6 @@
 import express from "express";
+import dns from "dns";
+import mongoose from "mongoose";
 import dbConnection  from "./database/dbConnection.js";
 import jobRouter from "./routes/jobRoutes.js";
 import userRouter from "./routes/userRoutes.js";
@@ -8,6 +10,9 @@ import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+
+// Use Google DNS instead of the router's DNS
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const app = express();
 config({ path: "./config/config.env" });

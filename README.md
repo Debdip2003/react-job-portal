@@ -23,9 +23,70 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-- Node.js installed on your machine with latest version or v22.2.0 above
-- MongoDB Atlas account (or local MongoDB server)
-- Cloudinary account for image storage
+Before running the application, make sure you have the following:
+
+- Node.js v22.2.0 or higher
+- A MongoDB Atlas account (or a local MongoDB server)
+- A Cloudinary account for image storage
+- Git installed on your system
+
+## MongoDB Atlas Setup
+
+This application uses MongoDB to store users, jobs, applications, and other application data.
+
+If you want to connect the application to **your own MongoDB Atlas database**, follow the steps below.
+
+### 1. Create a MongoDB Atlas Account
+
+Go to [MongoDB Atlas](https://www.mongodb.com/atlas) and create an account or sign in to your existing account.
+
+### 2. Create a New Project
+
+After logging in:
+
+1. Create a new project.
+2. Give your project a suitable name, such as `Job Portal`.
+3. Click **Create Project**.
+
+### 3. Create a MongoDB Cluster
+
+Inside your project:
+
+1. Click **Create** or **Build a Database**.
+2. Select the **Free (M0)** cluster tier if you are using the application for development or testing.
+3. Select your preferred cloud provider and region.
+4. Give your cluster a name.
+5. Click **Create**.
+
+MongoDB Atlas will now create your database cluster.
+
+### 4. Create a Database User
+
+You need to create a database user that the backend can use to connect to MongoDB.
+
+1. Go to **Database Access** from the left sidebar.
+2. Click **Add New Database User**.
+3. Enter a username and password.
+4. Under **Database User Privileges**, select an appropriate permission such as:
+   - `Read and write to any database`
+5. Click **Add User**.
+
+> **Important:** Remember the username and password. They will be required when creating the MongoDB connection string.
+
+### 5. Configure Network Access
+
+MongoDB Atlas allows you to control which IP addresses can connect to your database.
+
+Go to:
+
+**Security → Network Access**
+
+Click **Add IP Address**.
+
+For development purposes, you can select:
+
+```text
+Allow Access from Anywhere
 
 ### Installation
 
